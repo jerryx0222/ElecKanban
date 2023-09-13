@@ -267,8 +267,8 @@ bool HDataBaseMySQL::Open(QString  strDBFile)
         m_db.setPort(3306);
         m_db.setDatabaseName(strDBFile);
         m_db.setUserName("root");
-        m_db.setPassword("password");
-        //m_db.setPassword("hcs09871234");
+        //m_db.setPassword("password");
+        m_db.setPassword("hcs09871234");
 
 
         if(!m_db.open())
