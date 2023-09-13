@@ -1279,9 +1279,9 @@ bool HElcSignage::CreateDB()
     }
 
     //建立系統資料表
-    if(!pDB->CheckTableExist("IntaiWeb_SystemSet"))
+    if(!pDB->CheckTableExist("IntaiWeb_systemSet"))
     {
-        strSQL = "CREATE TABLE IntaiWeb_SystemSet (";
+        strSQL = "CREATE TABLE IntaiWeb_systemSet (";
         strSQL += "DataName VARCHAR(255),";
         strSQL += "IntData integer,";
         strSQL += "DblData double,";
@@ -1591,7 +1591,7 @@ bool HElcSignage::CopyDBs()
     CopyDBs("IntaiWeb_Shipment",strValue.split(","));
 
     strValue="DataName,IntData,DblData,StrData";
-    CopyDBs("IntaiWeb_SystemSet",strValue.split(","));
+    CopyDBs("IntaiWeb_systemSet",strValue.split(","));
 
     strValue="TypeID,TypeName";
     CopyDBs("IntaiWeb_types",strValue.split(","));
@@ -1744,14 +1744,14 @@ bool HElcSignage::LoadSysatem()
 
     for(itMap=m_mapSystemDatas.begin();itMap!=m_mapSystemDatas.end();itMap++)
     {
-        strSQL=QString("Select Count(*) from IntaiWeb_SystemSet Where DataName='%1'").arg(itMap->first);
+        strSQL=QString("Select Count(*) from IntaiWeb_systemSet Where DataName='%1'").arg(itMap->first);
         if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
         {
             nCount=0;
             pRS->GetValue(L"Count(*)",nCount);
             if(nCount<=0)
             {
-                strSQL=QString("Insert Into IntaiWeb_SystemSet(DataName,IntData,DblData,StrData) Values('%1',%2,%3,'%4')").arg(
+                strSQL=QString("Insert Into IntaiWeb_systemSet(DataName,IntData,DblData,StrData) Values('%1',%2,%3,'%4')").arg(
                             itMap->first).arg(
                             itMap->second->nValue).arg(
                             itMap->second->dblValue).arg(
@@ -1762,7 +1762,7 @@ bool HElcSignage::LoadSysatem()
     }
 
     SystemData* pNewData;
-    strSQL="Select * from IntaiWeb_SystemSet Order by DataName";
+    strSQL="Select * from IntaiWeb_systemSet Order by DataName";
     if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
     {
         while(!pRS->isEOF())
@@ -5784,7 +5784,7 @@ bool HElcSignage::SaveSystemData(QString name, int value)
     std::map<QString, SystemData*>::iterator itMap=m_mapSystemDatas.find(name);
     if(itMap!=m_mapSystemDatas.end())
     {
-        strSQL=QString("update IntaiWeb_SystemSet Set IntData=%1 Where DataName='%2'").arg(value).arg(name);
+        strSQL=QString("update IntaiWeb_systemSet Set IntData=%1 Where DataName='%2'").arg(value).arg(name);
         if(pDB->ExecuteSQL(strSQL))
         {
             itMap->second->nValue=value;
@@ -5806,7 +5806,7 @@ bool HElcSignage::SaveSystemData(QString name, double value)
     std::map<QString, SystemData*>::iterator itMap=m_mapSystemDatas.find(name);
     if(itMap!=m_mapSystemDatas.end())
     {
-        strSQL=QString("update IntaiWeb_SystemSet Set DblData=%1 Where DataName='%2'").arg(value).arg(name);
+        strSQL=QString("update IntaiWeb_systemSet Set DblData=%1 Where DataName='%2'").arg(value).arg(name);
         if(pDB->ExecuteSQL(strSQL))
         {
             itMap->second->dblValue=value;
@@ -5830,7 +5830,7 @@ bool HElcSignage::SaveSystemData(QString name, QString value)
     std::map<QString, SystemData*>::iterator itMap=m_mapSystemDatas.find(name);
     if(itMap!=m_mapSystemDatas.end())
     {
-        strSQL=QString("update IntaiWeb_SystemSet Set StrData='%1' Where DataName='%2'").arg(value).arg(name);
+        strSQL=QString("update IntaiWeb_systemSet Set StrData='%1' Where DataName='%2'").arg(value).arg(name);
         if(pDB->ExecuteSQL(strSQL))
         {
             itMap->second->strValue=value;
