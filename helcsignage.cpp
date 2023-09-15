@@ -34,6 +34,8 @@ HElcSignage::HElcSignage(QObject *parent)
     AddNewSystemData("ERPWIP_Login",    "A110110");
     AddNewSystemData("ERPWIP_Pwd",      "sap1234");
 
+    AddNewSystemData("UpdateFilePath",  "/home/intai/ElecKanban_linuxR/Update/");
+
 
     LoadDB();
 
@@ -936,14 +938,14 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                 }
             }
 
-            strSQL=QString("Select count(*) from IntaiWeb_processLink Where ProductID='%1' and theOrder=%2").arg(
+            strSQL=QString("Select count(*) from IntaiWeb_processlink Where ProductID='%1' and theOrder=%2").arg(
                         itP->first).arg(nMax-index-1);
             if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
             {
                 nValue=0;
                 if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
                 {
-                    strSQL=QString("insert into IntaiWeb_processLink(ProductID,PartID,ProcessID,theOrder) Values('%1','%1','%2',%3)").arg(
+                    strSQL=QString("insert into IntaiWeb_processlink(ProductID,PartID,ProcessID,theOrder) Values('%1','%1','%2',%3)").arg(
                                 itP->first).arg(info).arg(nMax-index-1);
                     pDB->ExecuteSQL(strSQL);
                     index++;
@@ -953,7 +955,7 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
 
         }
         index=itP->second.size();
-        strSQL=QString("delete from IntaiWeb_processLink Where ProductID='%1' and theOrder>=%2").arg(itP->first).arg(index);
+        strSQL=QString("delete from IntaiWeb_processlink Where ProductID='%1' and theOrder>=%2").arg(itP->first).arg(index);
         pDB->ExecuteSQL(strSQL);
     }
 
@@ -980,14 +982,14 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                     }
                 }
 
-                strSQL=QString("Select count(*) from IntaiWeb_processLink Where ProductID='%1' and theOrder=%2").arg(
+                strSQL=QString("Select count(*) from IntaiWeb_processlink Where ProductID='%1' and theOrder=%2").arg(
                             pPart->PartID).arg(nMax-index-1);
                 if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
                 {
                     nValue=0;
                     if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
                     {
-                        strSQL=QString("insert into IntaiWeb_processLink(ProductID,PartID,ProcessID,theOrder) Values('%1','%2','%3',%4)").arg(
+                        strSQL=QString("insert into IntaiWeb_processlink(ProductID,PartID,ProcessID,theOrder) Values('%1','%2','%3',%4)").arg(
                                     pPart->PartID).arg(pPart->PartID).arg(info).arg(nMax-index-1);
                         pDB->ExecuteSQL(strSQL);
                         index++;
@@ -995,7 +997,7 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                 }  
             }
             index=itP->second.size();
-            strSQL=QString("delete from IntaiWeb_processLink Where ProductID='%1' and theOrder>=%2").arg(itP->first).arg(index);
+            strSQL=QString("delete from IntaiWeb_processlink Where ProductID='%1' and theOrder>=%2").arg(itP->first).arg(index);
             pDB->ExecuteSQL(strSQL);
         }
 
@@ -1014,7 +1016,7 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                 {
                     index+=itP->second.size();
                     nOrder=plstPartProcess->size()-index;
-                    strSQL=QString("update IntaiWeb_processLink Set PartID='%1' Where ProductID='%2' and theOrder=%3").arg(
+                    strSQL=QString("update IntaiWeb_processlink Set PartID='%1' Where ProductID='%2' and theOrder=%3").arg(
                                 itP->first).arg(
                                 pPart->PartID).arg(
                                 nOrder);
@@ -1381,9 +1383,9 @@ bool HElcSignage::CreateDB()
     }
 
     //建立ProcessLink(製程)資料表
-    if(!pDB->CheckTableExist("IntaiWeb_processLink"))
+    if(!pDB->CheckTableExist("IntaiWeb_processlink"))
     {
-        strSQL = "CREATE TABLE IntaiWeb_processLink (";
+        strSQL = "CREATE TABLE IntaiWeb_processlink (";
         strSQL += "id INT AUTO_INCREMENT PRIMARY KEY,";
         strSQL += "ProcessID VARCHAR(32),";           // 製程編號
         strSQL += "ProductID VARCHAR(32),";           // 產品料號
@@ -1567,7 +1569,7 @@ bool HElcSignage::CopyDBs()
     CopyDBs("IntaiWeb_process",strValue.split(","));
 
     strValue="ProcessID,ProductID,PartID,theOrder,DayTarget,Stock,Schedule";
-    CopyDBs("IntaiWeb_processLink",strValue.split(","));
+    CopyDBs("IntaiWeb_processlink",strValue.split(","));
 
     strValue="ProductID,CName,FirstPass,Stock,TypeID";
     CopyDBs("IntaiWeb_product",strValue.split(","));
@@ -1900,14 +1902,14 @@ bool HElcSignage::SaveProcessDayCount(QString strPID, std::map<QString, int> &da
     {
         if(pPart==nullptr)
         {
-            strSQL=QString("Update IntaiWeb_processLink Set DayTarget=%1 Where ProcessID='%2' and ProductID='%3'").arg(
+            strSQL=QString("Update IntaiWeb_processlink Set DayTarget=%1 Where ProcessID='%2' and ProductID='%3'").arg(
                         itMap->second).arg(
                         itMap->first).arg(
                         strPID);
         }
         else
         {
-            strSQL=QString("Update IntaiWeb_processLink Set DayTarget=%1 Where ProcessID='%2' and ProductID='%3'").arg(
+            strSQL=QString("Update IntaiWeb_processlink Set DayTarget=%1 Where ProcessID='%2' and ProductID='%3'").arg(
                         itMap->second).arg(
                         itMap->first).arg(
                         strPID);
@@ -2073,7 +2075,7 @@ bool HElcSignage::GetProductProcess(QString pID, std::list<ProcessInfo> &datas)
         pRS->GetValue(L"StockCount",dbl3001);
 
 
-    strSQL=QString("select * from IntaiWeb_processLink Where ProductID='%1' and PartID='%1' order by theOrder").arg(pID);
+    strSQL=QString("select * from IntaiWeb_processlink Where ProductID='%1' and PartID='%1' order by theOrder").arg(pID);
     if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
     {
         while(!pRS->isEOF())
@@ -2213,14 +2215,14 @@ bool HElcSignage::SavetProductProcess(QString pID, std::list<ProcessInfo> &datas
         return false;
     }
 
-    strSQL=QString("select Count(*) From IntaiWeb_processLink Where ProductID='%1'").arg(pID);
+    strSQL=QString("select Count(*) From IntaiWeb_processlink Where ProductID='%1'").arg(pID);
     if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
     {
         if(pRS->GetValue(L"Count(*)",nCount))
         {
             if(nCount > static_cast<int>(datas.size()))
             {
-                strSQL=QString("delete IntaiWeb_processLink Where ProductID='%1' and theOrder>=%2").arg(pID).arg(datas.size());
+                strSQL=QString("delete IntaiWeb_processlink Where ProductID='%1' and theOrder>=%2").arg(pID).arg(datas.size());
                 pDB->ExecuteSQL(strSQL);
             }
         }
@@ -2233,13 +2235,13 @@ bool HElcSignage::SavetProductProcess(QString pID, std::list<ProcessInfo> &datas
     {
         pInfo=&(*itL);
         nCount=-1;
-        strSQL=QString("select Count(*) From IntaiWeb_processLink Where ProcessID='%1' and ProductID='%2' and PartID='%3'").arg(
+        strSQL=QString("select Count(*) From IntaiWeb_processlink Where ProcessID='%1' and ProductID='%2' and PartID='%3'").arg(
                     pInfo->ProcessID).arg(
                     pID).arg(
                     pInfo->ProductID);
         if(pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) && pRS->GetValue(L"Count(*)",nCount) && nCount>0)
         {
-            strSQL=QString("update IntaiWeb_processLink set theOrder=%1 Where ProcessID='%2' and ProductID='%3' and PartID='%4'").arg(
+            strSQL=QString("update IntaiWeb_processlink set theOrder=%1 Where ProcessID='%2' and ProductID='%3' and PartID='%4'").arg(
                         index).arg(
                         pInfo->ProcessID).arg(
                         pID).arg(
@@ -2247,7 +2249,7 @@ bool HElcSignage::SavetProductProcess(QString pID, std::list<ProcessInfo> &datas
         }
         else
         {
-            strSQL=QString("insert into IntaiWeb_processLink(ProcessID,ProductID,PartID,theOrder,DayTarget,Stock,Schedule) Values('%1','%2','%3',%4,%5,%6,%7)").arg(
+            strSQL=QString("insert into IntaiWeb_processlink(ProcessID,ProductID,PartID,theOrder,DayTarget,Stock,Schedule) Values('%1','%2','%3',%4,%5,%6,%7)").arg(
                         pInfo->ProcessID).arg(
                         pID).arg(
                         pInfo->ProductID).arg(
@@ -2272,7 +2274,7 @@ bool HElcSignage::RemoveProductProcess(QString pID, QString Product, QString Par
     (m_pMySQLDB==nullptr)?(pDB=&m_LiteDB):(pDB=m_pMySQLDB);
     if(!pDB->Open())
         return false;
-    strSQL=QString("delete from IntaiWeb_processLink Where ProcessID='%1' and ProductID='%2' and PartID='%3'").arg(
+    strSQL=QString("delete from IntaiWeb_processlink Where ProcessID='%1' and ProductID='%2' and PartID='%3'").arg(
                 pID).arg(
                 Product).arg(
                 Part);
@@ -2368,7 +2370,7 @@ bool HElcSignage::GetPartProcess(QString part, std::list<ProcessInfo> &datas)
     GetPartPariantID(part,part);
 
     pDB->Open();
-    strSQL=QString("select * from IntaiWeb_processLink Where ProductID='%1' order by theOrder").arg(part);
+    strSQL=QString("select * from IntaiWeb_processlink Where ProductID='%1' order by theOrder").arg(part);
     if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
     {
         while(!pRS->isEOF())
@@ -2669,7 +2671,7 @@ bool HElcSignage::GetPartProcess(QString part, std::list<QString> &datas)
         return false;
     }
 
-    strSQL=QString("select * from IntaiWeb_processLink Where ProductID='%1' order by theOrder").arg(part);
+    strSQL=QString("select * from IntaiWeb_processlink Where ProductID='%1' order by theOrder").arg(part);
     if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))
     {
         while(!pRS->isEOF())
@@ -3589,14 +3591,14 @@ bool HElcSignage::CopyProductProcess(QString target, QString source)
     QString strProcess,strSQL;
     int nOrder,nTarget=0,nSource=0,nCount=0;
 
-    strSQL=QString("Select Count(*) from IntaiWeb_processLink Where ProductID='%1' and PartID='%1'").arg(target);
+    strSQL=QString("Select Count(*) from IntaiWeb_processlink Where ProductID='%1' and PartID='%1'").arg(target);
     if(!pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) || !pRS->GetValue(L"Count(*)",nTarget))
     {
         delete pRS;
         pDB->Close();
         return false;
     }
-    strSQL=QString("Select Count(*) from IntaiWeb_processLink Where ProductID='%1' and PartID='%1'").arg(source);
+    strSQL=QString("Select Count(*) from IntaiWeb_processlink Where ProductID='%1' and PartID='%1'").arg(source);
     if(!pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) || !pRS->GetValue(L"Count(*)",nSource))
     {
         delete pRS;
@@ -3605,12 +3607,12 @@ bool HElcSignage::CopyProductProcess(QString target, QString source)
     }
     if(nSource>nTarget)
     {
-        strSQL=QString("Delete from IntaiWeb_processLink Where ProductID='%1' and PartID='%1' and theOrder>=%2").arg(source).arg(nTarget);
+        strSQL=QString("Delete from IntaiWeb_processlink Where ProductID='%1' and PartID='%1' and theOrder>=%2").arg(source).arg(nTarget);
         pDB->ExecuteSQL(strSQL);
     }
 
 
-    strSQL=QString("Select * from IntaiWeb_processLink Where ProductID='%1' and PartID='%1' order by theOrder").arg(target);
+    strSQL=QString("Select * from IntaiWeb_processlink Where ProductID='%1' and PartID='%1' order by theOrder").arg(target);
     if(!pRS->ExcelSQL(strSQL.toStdWString(),pDB))
     {
         delete pRS;
@@ -3631,16 +3633,16 @@ bool HElcSignage::CopyProductProcess(QString target, QString source)
     int index=0;
     for(size_t i=0;i<vProcesses.size();i++)
     {
-        strSQL=QString("Select Count(*) from IntaiWeb_processLink Where ProductID='%1' and PartID='%1' and theOrder=%2").arg(source).arg(i);
+        strSQL=QString("Select Count(*) from IntaiWeb_processlink Where ProductID='%1' and PartID='%1' and theOrder=%2").arg(source).arg(i);
         if(pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) && pRS->GetValue(L"Count(*)",nCount))
         {
             if(nCount<=0)
-                strSQL=QString("insert into IntaiWeb_processLink(ProcessID,ProductID,PartID,theOrder) Values('%1','%2','%2',%3)").arg(
+                strSQL=QString("insert into IntaiWeb_processlink(ProcessID,ProductID,PartID,theOrder) Values('%1','%2','%2',%3)").arg(
                             vProcesses[i]).arg(
                             source).arg(
                             index);
             else
-                strSQL=QString("update IntaiWeb_processLink set ProcessID='%1',theOrder=%3 Where ProductID='%2' and PartID='%2'").arg(
+                strSQL=QString("update IntaiWeb_processlink set ProcessID='%1',theOrder=%3 Where ProductID='%2' and PartID='%2'").arg(
                             vProcesses[i]).arg(
                             source).arg(
                             index);
@@ -3683,14 +3685,14 @@ bool HElcSignage::CopyPartProcess(QString target, QString source)
 
     QString strProcess,strPart,strSQL;
     int nOrder,nTarget=0,nSource=0,nCount=0;
-    strSQL=QString("Select Count(*) from IntaiWeb_IntaiWeb_ProcessLink Where ProductID='%1'").arg(target);
+    strSQL=QString("Select Count(*) from IntaiWeb_IntaiWeb_processlink Where ProductID='%1'").arg(target);
     if(!pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) || !pRS->GetValue(L"Count(*)",nTarget))
     {
         delete pRS;
         pDB->Close();
         return false;
     }
-    strSQL=QString("Select Count(*) from IntaiWeb_processLink Where ProductID='%1'").arg(source);
+    strSQL=QString("Select Count(*) from IntaiWeb_processlink Where ProductID='%1'").arg(source);
     if(!pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) || !pRS->GetValue(L"Count(*)",nSource))
     {
         delete pRS;
@@ -3699,12 +3701,12 @@ bool HElcSignage::CopyPartProcess(QString target, QString source)
     }
     if(nSource>nTarget)
     {
-        strSQL=QString("Delete from IntaiWeb_processLink Where ProductID='%1' and theOrder>=%2").arg(source).arg(nTarget);
+        strSQL=QString("Delete from IntaiWeb_processlink Where ProductID='%1' and theOrder>=%2").arg(source).arg(nTarget);
         pDB->ExecuteSQL(strSQL);
     }
 
 
-    strSQL=QString("Select * from IntaiWeb_processLink Where IntaiWeb_productID='%1' order by theOrder").arg(target);
+    strSQL=QString("Select * from IntaiWeb_processlink Where IntaiWeb_productID='%1' order by theOrder").arg(target);
     if(!pRS->ExcelSQL(strSQL.toStdWString(),pDB))
     {
          delete pRS;
@@ -3740,20 +3742,20 @@ bool HElcSignage::CopyPartProcess(QString target, QString source)
     int index=0;
     for(size_t i=0;i<vProcesses.size();i++)
     {
-        strSQL=QString("Select Count(*) from IntaiWeb_processLink Where ProductID='%1' and PartID='%2' and theOrder=%3").arg(
+        strSQL=QString("Select Count(*) from IntaiWeb_processlink Where ProductID='%1' and PartID='%2' and theOrder=%3").arg(
                     source).arg(
                     vParts[i]).arg(
                     i);
         if(pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) && pRS->GetValue(L"Count(*)",nCount))
         {
             if(nCount<=0)
-                strSQL=QString("insert into IntaiWeb_processLink(ProcessID,ProductID,PartID,theOrder) Values('%1','%2','%3',%4)").arg(
+                strSQL=QString("insert into IntaiWeb_processlink(ProcessID,ProductID,PartID,theOrder) Values('%1','%2','%3',%4)").arg(
                             vProcesses[i]).arg(
                             source).arg(
                             vParts[i]).arg(
                             index);
             else
-                strSQL=QString("update IntaiWeb_processLink set ProcessID='%1',theOrder=%4 Where ProductID='%2' and PartID='%3'").arg(
+                strSQL=QString("update IntaiWeb_processlink set ProcessID='%1',theOrder=%4 Where ProductID='%2' and PartID='%3'").arg(
                             vProcesses[i]).arg(
                             source).arg(
                             vParts[i]).arg(
@@ -5867,9 +5869,9 @@ bool HElcSignage::ExportWipTarget(QString strFile,Product* pProduct,Part* pPart)
 
     QString strSQL;
     if(pProduct!=nullptr)
-        strSQL=QString("select *,PS.CName as PSName from IntaiWeb_processLink as L,IntaiWeb_product as P,IntaiWeb_process as PS Where L.ProductID=P.ProductID and P.TypeID='%1' and PS.ProcessID=L.ProcessID order by L.theOrder desc").arg(m_TypeSelect);
+        strSQL=QString("select *,PS.CName as PSName from IntaiWeb_processlink as L,IntaiWeb_product as P,IntaiWeb_process as PS Where L.ProductID=P.ProductID and P.TypeID='%1' and PS.ProcessID=L.ProcessID order by L.theOrder desc").arg(m_TypeSelect);
     else if(pProduct!=nullptr)
-        strSQL=QString("select * from IntaiWeb_processLink as L,IntaiWeb_part as P Where L.ProductID=P.PartID and L.ProductID='%1' and P.TypeID='%2' order by L.theOrder desc").arg(pPart->PartID).arg(m_TypeSelect);
+        strSQL=QString("select * from IntaiWeb_processlink as L,IntaiWeb_part as P Where L.ProductID=P.PartID and L.ProductID='%1' and P.TypeID='%2' order by L.theOrder desc").arg(pPart->PartID).arg(m_TypeSelect);
     else
     {
         delete pRS;
