@@ -5164,16 +5164,23 @@ bool HElcSignage::ImportShipmentDateFile(QString strFile)
 
 
     // save to export
-    QString strFileName=QString("%1/Export/DataExport.XLSX").arg(m_strAppPath);
-     bool copySuccess = QFile::copy(strFile,strFileName);
+    //QString strFileName=QString("%1/Export/DataExport.XLSX").arg(m_strAppPath);
+    // bool copySuccess = QFile::copy(strFile,strFileName);
 
-    return copySuccess;
+    //return copySuccess;
+
+    return true;
 
 }
 
 bool HElcSignage::ImportShipmentDateFile()
 {
-    QDir directory(m_strAppPath + "/Update");
+    QString strFilePath=m_strAppPath + "/Update";
+    SystemData *pSData=GetSystemData("UpdateFilePath");
+    if(pSData!=nullptr)
+        strFilePath=pSData->strValue;
+
+    QDir directory(strFilePath);
     QString strType,strFile;
     int st,end;
     QStringList fileList = directory.entryList(QDir::Files);
@@ -5209,8 +5216,27 @@ bool HElcSignage::ImportShipmentDateFile()
              if(ImportShipmentDateFile(strFile))
              {
                  QFile file(strFile);
-                 file.remove();
-                 return true;
+                 if(file.exists())
+                 {
+                     if(file.remove())
+                         return true;
+                     /*
+                     if (file.setPermissions(QFile::ReadOther | QFile::WriteOther))
+                         return file.remove();
+
+                    QStringList args;
+                    args << "rm" << "-f" << strFile;
+
+                    QProcess process;
+                    process.start("sudo", args);
+                    process.write("1234\n"); // 替換為您的 sudo 密碼
+
+                    process.start("bash", args);
+
+                    if(process.waitForFinished())
+                        return true;
+                        */
+                 }
              }
          }
 
