@@ -241,6 +241,7 @@ HDataBaseMySQL::~HDataBaseMySQL()
 
 bool HDataBaseMySQL::Open(QString  strDBFile)
 {
+    QString strError;
     #ifdef USE_MYSQL
     try {
         if(strDBFile.isEmpty())
@@ -262,17 +263,32 @@ bool HDataBaseMySQL::Open(QString  strDBFile)
         if(!bFind)
             return false;
         */
-        m_db=QSqlDatabase::addDatabase("QMYSQL");
-        m_db.setHostName("localhost");
-        m_db.setPort(3306);
-        m_db.setDatabaseName(strDBFile);
-        m_db.setUserName("root");
-        m_db.setPassword("password");
-        //m_db.setPassword("hcs09871234");
 
+        bool bOpen=false;
+        if(QSqlDatabase::contains("my_custom_connection"))
+        {
+            m_db=QSqlDatabase::database("my_custom_connection");
+            bOpen=m_db.open();
+            if(bOpen)
+                return true;
+        }
+        if(!bOpen)
+        {
+            m_db=QSqlDatabase::addDatabase("QMYSQL","my_custom_connection");
+            //m_db=QSqlDatabase::addDatabase("QMYSQL");
+            m_db.setHostName("localhost");
+            m_db.setPort(3306);
+            m_db.setDatabaseName(strDBFile);
+            m_db.setUserName("root");
+            m_db.setPassword("password");
+            //m_db.setPassword("hcs09871234");
+        }
 
         if(!m_db.open())
+        {
+            strError=m_db.lastError().text();
             return false;
+        }
         m_strDBFile=strDBFile;
     } catch (...) {
         return false;
