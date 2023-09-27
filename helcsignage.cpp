@@ -4635,11 +4635,16 @@ void HElcSignage::GetRunningsFromDB(QString type, QString strProduct,QString &Pr
 bool HElcSignage::GetStockCount(QString type,QString productId, QString position, double &out)
 {
     double dblValue=-1;
-    QString strValue,strDate,strProduct,strSQL=QString("SELECT stockcount FROM IntaiWeb_erpstock Where ProductID='%1' and StockID='%2' and Type='%3'").arg(
+    QString strValue,strDate,strProduct;
+    /*
+    QString strSQL=QString("SELECT stockcount FROM IntaiWeb_erpstock Where ProductID='%1' and StockID='%2' and Type='%3'").arg(
                 productId).arg(
                 position).arg(
                 type);//m_TypeSelect);
-
+    */
+    QString strSQL=QString("SELECT StockCount FROM IntaiWeb_ERPStock Where ProductID='%1' and StockID='%2'").arg(
+                productId).arg(
+                position);//m_TypeSelect);
     HRecordset* pRS;
     HDataBase* pDB;
     if(m_pMySQLDB==nullptr)
@@ -4658,7 +4663,7 @@ bool HElcSignage::GetStockCount(QString type,QString productId, QString position
         return false;
     }
 
-    if(pRS->ExcelSQL(strSQL.toStdWString(),&m_LiteDB) && !pRS->isEOF())
+    if(pRS->ExcelSQL(strSQL.toStdWString(),pDB))// && !pRS->isEOF())
     {
 
         if(pRS->GetValue(L"StockCount",dblValue) && dblValue>=0)
