@@ -5147,7 +5147,7 @@ bool HElcSignage::ImportShipmentDateFile(QString strFile)
         pList=&(*itD);
         if(pList->size()>=4)
         {
-            if((*pList)[2].size()<=16)
+            if((*pList)[2].size()<=32)
             {
                 strSQL=QString("insert into IntaiWeb_Shipment(ProductID,OutDate,OutCount) Values('%1','%2',%3)").arg(
                             (*pList)[2]).arg(
