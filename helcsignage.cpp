@@ -824,17 +824,19 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
         {
             nValue=0;
             if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
-                strSQL=QString("insert into IntaiWeb_product(ProductID,CName,FirstPass,TypeID) Values('%1','%2',%3,'%4')").arg(
+                strSQL=QString("insert into IntaiWeb_product(ProductID,CName,FirstPass,TypeID,Stock) Values('%1','%2',%3,'%4',%5)").arg(
                             pProduct->ProductID).arg(
                             pProduct->CName).arg(
                             pProduct->FirstPass).arg(
-                            pProduct->TypeID);
+                            pProduct->TypeID).arg(
+                            pProduct->Stock);
             else
-                strSQL=QString("update IntaiWeb_product Set CName='%2',FirstPass=%3,TypeID='%4' where ProductID='%1'").arg(
+                strSQL=QString("update IntaiWeb_product Set CName='%2',FirstPass=%3,TypeID='%4',Stock=%5 where ProductID='%1'").arg(
                             pProduct->ProductID).arg(
                             pProduct->CName).arg(
                             pProduct->FirstPass).arg(
-                            pProduct->TypeID);
+                            pProduct->TypeID).arg(
+                            pProduct->Stock);
             pDB->ExecuteSQL(strSQL);
         }
 
@@ -945,8 +947,13 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                 nValue=0;
                 if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
                 {
-                    strSQL=QString("insert into IntaiWeb_processlink(ProductID,PartID,ProcessID,theOrder) Values('%1','%1','%2',%3)").arg(
-                                itP->first).arg(info).arg(nMax-index-1);
+                    strSQL=QString("insert into IntaiWeb_processlink(ProductID,PartID,ProcessID,theOrder,DayTarget,Stock,Schedule) Values('%1','%1','%2',%3,%4,%5,%6)").arg(
+                                itP->first).arg(
+                                info).arg(
+                                nMax-index-1).arg(
+                                0).arg(
+                                0).arg(
+                                0);
                     pDB->ExecuteSQL(strSQL);
                     index++;
                 }
@@ -989,8 +996,14 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                     nValue=0;
                     if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
                     {
-                        strSQL=QString("insert into IntaiWeb_processlink(ProductID,PartID,ProcessID,theOrder) Values('%1','%2','%3',%4)").arg(
-                                    pPart->PartID).arg(pPart->PartID).arg(info).arg(nMax-index-1);
+                        strSQL=QString("insert into IntaiWeb_processlink(ProductID,PartID,ProcessID,theOrder,DayTarget,Stock,Schedule) Values('%1','%2','%3',%4,%5,%6,%7)").arg(
+                                    pPart->PartID).arg(
+                                    pPart->PartID).arg(
+                                    info).arg(
+                                    nMax-index-1).arg(
+                                    0).arg(
+                                    0).arg(
+                                    0);
                         pDB->ExecuteSQL(strSQL);
                         index++;
                     }
