@@ -5124,7 +5124,7 @@ bool HElcSignage::ImportShipmentDateFile(QString strFile)
     if(nCol!=TargetColumn)
         return false;
 
-    for(int row=2;row<=nRow;++row)
+    for(int row=2;row<=(nRow+1);++row)
     {
         QStringList values;
         QDate vDate = xlsx.read(row, 1).toDate();    //出貨日期
