@@ -4002,6 +4002,7 @@ void HElcSignage::GetShipMents(QStringList &Products, std::map<QString, Shipment
     std::map<QString,Shipment>::iterator itDate;
     std::map<QString,Shipment>* pMapValues=nullptr;
 
+    outShipments.clear();
     HRecordset* pRS;
     HDataBase* pDB;
     if(m_pMySQLDB==nullptr)
@@ -4105,6 +4106,7 @@ void HElcSignage::GetShipMents(std::map<QString,QString>& ProductInfos, std::map
     std::map<QString,Shipment>::iterator itDate;
     std::map<QString,Shipment>* pMapValues=nullptr;
 
+    outShipments.clear();
     if(ProductInfos.size()<=0)
         return;
     HRecordset* pRS;
