@@ -26,7 +26,7 @@ void HWebService::run()
     }
     else if(m_pStatuses!=nullptr && m_pHistorys==nullptr && m_pWipDatas==nullptr)
     {
-        if(GetStatus(m_strRunItem))
+        if(GetStatus(m_strRunItem,m_strRunProcess))
         {
             emit OnStatus();
             m_bRunning=false;
@@ -57,6 +57,7 @@ bool HWebService::RunSFCHistory(QString item)
 
     m_bRunning=true;
     m_strRunItem=item;
+    m_strRunProcess="";
     if(m_pHistorys!=nullptr) delete m_pHistorys;
     if(m_pStatuses!=nullptr) delete m_pStatuses;
     if(m_pWipDatas!=nullptr) delete m_pWipDatas;
@@ -94,7 +95,7 @@ int HWebService::StcSFCHistory(QString item,std::vector<HHistoryData>& datas)
 }
 
 
-bool HWebService::RunSFCStatus(QString item)
+bool HWebService::RunSFCStatus(QString item,QString strProcess)
 {
     if(m_bRunning)
         return false;
@@ -103,6 +104,7 @@ bool HWebService::RunSFCStatus(QString item)
         return false;
     m_bRunning=true;
     m_strRunItem=item;
+    m_strRunProcess=strProcess;
     if(m_pHistorys!=nullptr) delete m_pHistorys;
     if(m_pStatuses!=nullptr) delete m_pStatuses;
     if(m_pWipDatas!=nullptr) delete m_pWipDatas;
@@ -147,6 +149,7 @@ bool HWebService::RunWip(QString item)
         return false;
     m_bRunning=true;
     m_strRunItem=item;
+    m_strRunProcess="";
     if(m_pHistorys!=nullptr) delete m_pHistorys;
     if(m_pStatuses!=nullptr) delete m_pStatuses;
     if(m_pWipDatas!=nullptr) delete m_pWipDatas;
@@ -231,7 +234,7 @@ int HWebService::StcWip(QString item,std::vector<HWipData>& datas)
 
 
 
-bool HWebService::GetStatus(QString strItem)
+bool HWebService::GetStatus(QString strItem,QString strProcess)
 {
     // SFC 現況
     //QString strLink="https://win2016-testvm.intai-corp.com:5004/api/me/getsfcwip?site=1002&item=0264D32173P01
@@ -239,6 +242,9 @@ bool HWebService::GetStatus(QString strItem)
     QString strLink=m_strStatusLink;
     QString strOrder="";
     QString strOP="";
+
+    if(strProcess.size()>0)
+        strOP=strProcess;
 
     if(strOrder.size()>0)
         strLink+= QString("&order=%1").arg(strOrder);

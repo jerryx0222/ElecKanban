@@ -6039,7 +6039,8 @@ bool HElcSignage::LoadStatus()
         for(size_t i=0;i<datas.size();i++)
         {
             if(datas[i].status_DESCRIPTION=="Active" ||
-               datas[i].status_DESCRIPTION=="InQueue")
+               datas[i].status_DESCRIPTION=="InQueue" ||
+               datas[i].status_DESCRIPTION=="Hold")
             {
                 itPos=temps.find(datas[i].operation);
                 if(itPos!=temps.end())
@@ -6074,7 +6075,8 @@ bool HElcSignage::LoadStatus()
         for(size_t i=0;i<datas.size();i++)
         {
             if(datas[i].status_DESCRIPTION=="Active" ||
-               datas[i].status_DESCRIPTION=="InQueue")
+               datas[i].status_DESCRIPTION=="InQueue" ||
+               datas[i].status_DESCRIPTION=="Hold")
             {
                 itPos=temps.find(datas[i].operation);
                 if(itPos!=temps.end())

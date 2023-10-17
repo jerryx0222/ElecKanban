@@ -66,7 +66,7 @@ public:
 
 
     bool    RunSFCHistory(QString item);
-    bool    RunSFCStatus(QString item);
+    bool    RunSFCStatus(QString item,QString strProcess="");
     bool    RunWip(QString item);
 
     bool    CopyHistorys(std::vector<HHistoryData>&);
@@ -89,7 +89,7 @@ signals:
 
 private:
     bool GetSFC(QString strLink,QJsonArray &jsonArray);
-    bool GetStatus(QString strItem);
+    bool GetStatus(QString strItem,QString strProcess="");
     bool GetHistory(QString strItem);
     void RelistStatusDatas(QJsonArray &jsonArray);
     void RelistHistoryDatas(QJsonArray &jsonArray);
@@ -107,7 +107,7 @@ private:
 
     //QStringList m_lstStatuses; //m_lstHistorys
 
-    QString m_strRunItem;
+    QString m_strRunItem,m_strRunProcess;
     QReadWriteLock  m_lockData;
 
     bool    m_bRunning;

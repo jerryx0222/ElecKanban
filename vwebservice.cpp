@@ -127,7 +127,7 @@ void VWebService::on_btnStatus_clicked()
     ui->tableWidget->setRowCount(0);
     bool bRet=gSystem->IsRunning();
     if(!bRet)
-        bRet=gSystem->m_WebService.RunSFCStatus(ui->edtItem->text());
+        bRet=gSystem->m_WebService.RunSFCStatus(ui->edtItem->text(),ui->edtOP->text());
     ui->btnERP->setEnabled(!bRet);
     ui->btnStatus->setEnabled(!bRet);
     ui->btnUpdate->setEnabled(!bRet);
