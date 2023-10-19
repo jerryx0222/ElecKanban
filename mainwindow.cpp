@@ -103,7 +103,7 @@ void MainWindow::OnUserLogin(bool ok)
 
 void MainWindow::OnError(QString strErr)
 {
-    QString strVer="20230918";
+    QString strVer="20231019";
     if(strErr.size()<=0)
         setWindowTitle(QString("%1_%2").arg("Electronic Kanban").arg(strVer));
     else

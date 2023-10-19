@@ -705,7 +705,7 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
     for(int i=4;i<=nCol;i++)
     {
         strTemp = xlsx.read(1, i).toString();    // 製程開始位置
-        if(strTemp.size()>0 && strTemp=="Process")
+        if(strTemp.size()>0 && (strTemp=="Process"))
         {
             nProcessStart=i;
             break;
@@ -1020,6 +1020,7 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
         {
             plstPartProcess=&itP->second;
             nMax=plstPartProcess->size();
+            int nPIndex=0;
             itPartChild=pPart->parts.end();
             itPartChild--;
             while(itPartChild!=pPart->parts.end())
@@ -1036,6 +1037,9 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                     pDB->ExecuteSQL(strSQL);
                 }
                 itPartChild--;
+                nPIndex++;
+                if(nPIndex>=pPart->parts.size())
+                    break;
             }
         }
     }
