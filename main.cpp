@@ -19,16 +19,12 @@ int main(int argc, char *argv[])
     MainWindow w;
 
 
-
-    // 获取屏幕的尺寸
     QDesktopWidget *desktop = QApplication::desktop();
     QRect screenGeometry = desktop->screenGeometry();
     QSize screenSize = screenGeometry.size();
 
-    // 设置窗口的固定尺寸为屏幕尺寸
     w.setFixedSize(screenSize);
 
-    // 将窗口显示为最大化状态
     w.showMaximized();
 
 

@@ -75,7 +75,7 @@ public:
     bool GetPartProcess(QString pID,std::list<ProcessInfo> &datas);
     //bool GetPartProcess(QString ProductID,QString pID,std::list<ProcessInfo> &datas);
     bool GetPartProcess(QString pID,std::list<QString> &datas);
-    bool GetPartPariantID(QString partID,QString& PariantID);
+    bool GetPartPariantID(QString partID,QString& PariantID,QString pariDefault);
 
     bool GetPartCountSum(QString strPart,int& needed);
     bool CopyProcess(std::map<QString,QString>&);

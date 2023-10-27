@@ -2384,7 +2384,7 @@ bool HElcSignage::GetPartProcess(QString part, std::list<ProcessInfo> &datas)
     }
     pDB->Close();
 
-    GetPartPariantID(part,part);
+    GetPartPariantID(part,part,"");
 
     pDB->Open();
     strSQL=QString("select * from IntaiWeb_processlink Where ProductID='%1' order by theOrder").arg(part);
@@ -2708,10 +2708,11 @@ bool HElcSignage::GetPartProcess(QString part, std::list<QString> &datas)
     return datas.size()>0;
 }
 
-bool HElcSignage::GetPartPariantID(QString partID, QString &PariantID)
+bool HElcSignage::GetPartPariantID(QString partID, QString &PariantID,QString pariDefault)
 {
     QString strTemp="";
     std::map<QString,int>::iterator itChild;
+    std::vector<QString> vTemps;
     std::map<QString,Part*>::iterator itPart=m_mapParts.find(partID);
     if(itPart!=m_mapParts.end())// && itPart->second->parts.size()>0)  
     {
@@ -2720,17 +2721,32 @@ bool HElcSignage::GetPartPariantID(QString partID, QString &PariantID)
             itChild=itPart->second->parts.find(partID);
             if(itChild!=itPart->second->parts.end())
             {
+                /*
                 strTemp=itPart->first;
                 break;
+                */
+                vTemps.push_back(itPart->first);
             }
         }
     }
     else
-        strTemp=partID;
+    {
+        //strTemp=partID;
+        PariantID=partID;
+        return true;
+     }
 
-    if(strTemp.size()<=0)
+    if(vTemps.size()<=0)
         return false;
-    PariantID=strTemp;
+    for(int i=0;i<vTemps.size();i++)
+    {
+        if(vTemps[i]==pariDefault)
+        {
+            PariantID=pariDefault;
+            return true;
+        }
+    }
+    PariantID=vTemps[0];
     return true;
 }
 
@@ -6443,7 +6459,7 @@ bool HElcSignage::ExportBack()
                 itType=mapDataTypes.find(pInfo->ProductID);
                 if(itType!=mapDataTypes.end())
                 {
-                    if(!GetPartPariantID(pInfo->ProductID,PariantID))
+                    if(!GetPartPariantID(pInfo->ProductID,PariantID,itInfo->first))
                         PariantID=pInfo->ProductID;
                     strSQL=QString("select count(*) fromIntaiWeb_runningtables Where TypeID='%1' and ProductID='%2' and ProcessIndex=%3").arg(
                                 itType->second).arg(
@@ -6468,7 +6484,7 @@ bool HElcSignage::ExportBack()
                 }
                 else
                 {
-                    if(GetPartPariantID(pInfo->ProductID,PariantID))
+                    if(GetPartPariantID(pInfo->ProductID,PariantID,itInfo->first))
                     {
                         itType=mapDataTypes.find(PariantID);
                         if(itType!=mapDataTypes.end())
