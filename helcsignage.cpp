@@ -848,7 +848,7 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                 nValue=0;
                 if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
                 {
-                    strSQL=QString("insert into IntaiWeb_productlink(ProductID,PartID) Values('%1','%2')").arg(
+                    strSQL=QString("insert into IntaiWeb_productlink(ProductID,PartID,PartCount) Values('%1','%2',1)").arg(
                                 pProduct->ProductID).arg(
                                 itPartChild->first);
                     pDB->ExecuteSQL(strSQL);
@@ -865,17 +865,19 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
         {
             nValue=0;
             if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
-                strSQL=QString("insert into IntaiWeb_part(PartID,CName,Specification,TypeID) Values('%1','%2','%3','%4')").arg(
+                strSQL=QString("insert into IntaiWeb_part(PartID,CName,Specification,TypeID,Stock) Values('%1','%2','%3','%4',%5)").arg(
                             pPart->PartID).arg(
                             pPart->CName).arg(
                             pPart->Specification).arg(
-                            pPart->TypeID);
+                            pPart->TypeID).arg(
+                            pPart->Stock);
             else
-                strSQL=QString("update IntaiWeb_part Set CName='%2',Specification='%3',TypeID='%4' where PartID='%1'").arg(
+                strSQL=QString("update IntaiWeb_part Set CName='%2',Specification='%3',TypeID='%4',Stock=%5 where PartID='%1'").arg(
                             pPart->PartID).arg(
                             pPart->CName).arg(
                             pPart->Specification).arg(
-                            pPart->TypeID);
+                            pPart->TypeID).arg(
+                            pPart->Stock);
             pDB->ExecuteSQL(strSQL);
         }
     }
@@ -888,17 +890,19 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
         {
             nValue=0;
             if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
-                strSQL=QString("insert into IntaiWeb_part(PartID,CName,Specification,TypeID) Values('%1','%2','%3','%4')").arg(
+                strSQL=QString("insert into IntaiWeb_part(PartID,CName,Specification,TypeID,Stock) Values('%1','%2','%3','%4',%5)").arg(
                             pPart->PartID).arg(
                             pPart->CName).arg(
                             pPart->Specification).arg(
-                            pPart->TypeID);
+                            pPart->TypeID).arg(
+                            pPart->Stock);
             else
-                strSQL=QString("update IntaiWeb_part Set CName='%2',Specification='%3',TypeID='%4' where PartID='%1'").arg(
+                strSQL=QString("update IntaiWeb_part Set CName='%2',Specification='%3',TypeID='%4',Stock=%5 where PartID='%1'").arg(
                             pPart->PartID).arg(
                             pPart->CName).arg(
                             pPart->Specification).arg(
-                            pPart->TypeID);
+                            pPart->TypeID).arg(
+                            pPart->Stock);
             pDB->ExecuteSQL(strSQL);
         }
 
@@ -910,7 +914,7 @@ bool HElcSignage::LoadFile2CreateProduct(QString strFile)
                 nValue=0;
                 if(!pRS->GetValue(L"count(*)",nValue) || nValue<=0)
                 {
-                    strSQL=QString("insert into IntaiWeb_productlink(ProductID,PartID) Values('%1','%2')").arg(
+                    strSQL=QString("insert into IntaiWeb_productlink(ProductID,PartID,PartCount) Values('%1','%2',1)").arg(
                                 pPart->PartID).arg(
                                 itPartChild->first);
                     pDB->ExecuteSQL(strSQL);
